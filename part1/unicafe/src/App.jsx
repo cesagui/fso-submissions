@@ -8,11 +8,12 @@ const Button = ({onClick, text}) => {
   );
 }
 
-const Entry = ({name, value}) => {
+const StatisticLine = ({name, value}) => {
   return (
-    <p>
-      {name} {value}
-    </p>
+    <tr>
+      <td>{name}</td>
+      <td>{value}</td>
+    </tr>
   );
 }
 
@@ -23,14 +24,16 @@ const Statistics = ({good, neutral, bad, total, averageScore, posPercent}) => {
     )
   }
   return (
-    <>
-      <Entry name = 'good' value = {good}/>
-      <Entry name = 'neutral' value = {neutral}/>
-      <Entry name = 'bad' value = {bad}/> 
-      <Entry name = 'all' value = {total}/>
-      <Entry name = 'average' value = {averageScore}/>
-      <Entry name = 'positive' value = {posPercent}/>
-    </>
+    <table>
+      <tbody>
+        <StatisticLine name = 'good' value = {good}/>
+        <StatisticLine name = 'neutral' value = {neutral}/>
+        <StatisticLine name = 'bad' value = {bad}/>
+        <StatisticLine name = 'total' value = {total}/>
+        <StatisticLine name = 'all' value = {averageScore}/>
+        <StatisticLine name = 'positive' value = {posPercent}/>
+      </tbody>
+    </table>
   );
     
 }
