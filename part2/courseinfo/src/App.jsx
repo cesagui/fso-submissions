@@ -17,10 +17,16 @@ const Part = (props) => (
 const Total = (props) => <p>Number of exercises {props.total}</p>
 
 const Course = ({course}) => {
+  
+  const totalValue = course.parts.reduce((accumulator, currentObject) => {
+    return accumulator + currentObject.exercises;
+  }, 0);
+  
   return (
     <div>
       <Header course = {course.name}/>
       <Content parts = {course.parts}/>
+      <Total total = {totalValue}/>
     </div>
   )
 }
@@ -50,5 +56,6 @@ const App = () => {
 
   return <Course course={course} />
 }
+
 
 export default App
