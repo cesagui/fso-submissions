@@ -8,6 +8,7 @@ const Button = ({onClick, text}) => {
   );
 }
 
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -34,12 +35,36 @@ const App = () => {
     setVotes(copy);
   };
 
+  function indexOfMax(arr) {
+    if (arr.length === 0) {
+        return -1;
+    }
+
+    var max = arr[0];
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
+        }
+    }
+
+    return maxIndex;
+  }
+
+  const maxIndex = indexOfMax(votes);
+
   return (
     <div>
+      <h1>Anecdote of the day:</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
       <Button onClick = {handleVoteClick} text = 'vote'/>
       <Button onClick = {handleNextClick} text = 'next anecdote'/>
+      <h1>Anecdote with the most votes</h1>
+      <p>{anecdotes[maxIndex]}</p>
+      <p>has {votes[maxIndex]} votes</p>
     </div>
   )
 }
