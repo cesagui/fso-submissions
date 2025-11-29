@@ -3,14 +3,14 @@ import axios from 'axios'
 import Persons from './components/persons'
 import Form from './components/form'
 import Filter from './components/filter'
+import numberService from './services/numbers'
 
 const App = () => {
   const hook = () => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
+    numberService
+      .getAll()
+      .then(response =>{
         setPersons(response.data)
       })
   }
@@ -38,12 +38,18 @@ const App = () => {
       setNewName('')
       setNewNumber('')
 
-      axios.
-        post('http://localhost:3001/persons', personObject)
+      numberService.
+        create(personObject)
         .then(response => {
           console.log(response)
-          console.log('HI!')
         })
+
+      // axios.
+      //   post('http://localhost:3001/persons', personObject)
+      //   .then(response => {
+      //     console.log(response)
+      //     console.log('HI!')
+      //   })
     }
 
   }
