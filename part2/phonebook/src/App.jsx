@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Persons from './components/persons'
 import Form from './components/form'
 import Filter from './components/filter'
@@ -29,9 +28,10 @@ const App = () => {
     if(persons.some(person => person.name == newName)){
       alert (`${newName} is already added to the phonebook`);
     } else {
+      const newId = persons.length == 0 ? 1 : persons[persons.length - 1].id + 1
       const personObject = {
         name: newName,
-        id: persons.length + 1,
+        id: newId,
         number: newNumber,
       }
       setPersons(persons.concat(personObject));
@@ -43,15 +43,19 @@ const App = () => {
         .then(response => {
           console.log(response)
         })
-
-      // axios.
-      //   post('http://localhost:3001/persons', personObject)
-      //   .then(response => {
-      //     console.log(response)
-      //     console.log('HI!')
-      //   })
     }
 
+  }
+
+  const handleDeleteOf = (id) => {
+    console.log(`${id} needs to be deleted`)
+    numberService.deletePerson(id)
+      .then(response => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+      .catch(error => {
+        console.log('Error deleting from', error)
+      })
   }
 
   const handleNameChange = (event) => {
@@ -66,6 +70,7 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  
   return (
     <div>
       <h2>Phonebook</h2>
@@ -83,7 +88,11 @@ const App = () => {
         number = {newNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons = {persons} filter = {newFilter}/>
+      <Persons 
+        persons = {persons}
+        filter = {newFilter}
+        handleDelete = {handleDeleteOf}
+      />
     </div>
   )
 }
