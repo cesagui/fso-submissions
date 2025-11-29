@@ -3,6 +3,7 @@ import Persons from './components/persons'
 import Form from './components/form'
 import Filter from './components/filter'
 import numberService from './services/numbers'
+import Notification from './components/notification'
 
 const App = () => {
   const hook = () => {
@@ -20,6 +21,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notification, setNotification] = useState('some notification happened')
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
@@ -27,13 +29,19 @@ const App = () => {
     // check if the person exists in our persons object already
     if(persons.some(person => person.name == newName)){
       if (confirm(`${newName} is already in the phonebook, replace the old number with a new one?`)){
-        const oldPerson = persons.find(p => p.name = newName)
+
+        const oldPerson = persons.find(p => p.name == newName)
+        console.log(`looking to update ${oldPerson.id}`)
         const newPerson = {...oldPerson, number: newNumber}
-        numberService.update(newPerson.id, newPerson)
+        numberService.update(oldPerson.id, newPerson)
         .then(response => {
           setPersons(persons.map(p => p.id == newPerson.id ? newPerson : p))  
           setNewName('')
           setNewNumber('')
+          setNotification(`Updated ${newPerson.name}'s number to ${newPerson.number}`)  
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
         })
       }
     } else {
@@ -51,6 +59,10 @@ const App = () => {
         create(personObject)
         .then(response => {
           console.log(response)
+          setNotification(`Added ${personObject.name}`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
         })
     }
 
@@ -82,6 +94,7 @@ const App = () => {
   
   return (
     <div>
+      <Notification message = {notification}/>
       <h2>Phonebook</h2>
       <Filter
         filter = {newFilter}
