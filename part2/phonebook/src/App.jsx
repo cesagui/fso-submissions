@@ -5,24 +5,6 @@ import Form from './components/form'
 import Filter from './components/filter'
 
 const App = () => {
-  // const [persons, setPersons] = useState([
-  //   {
-  //     name: 'Arto Hellas', 
-  //     id: 0,
-  //     number: '123-456-7890'
-  //   },
-  //   {
-  //     name: 'Barrington Hendricks', 
-  //     id: 1,
-  //     number: '123-456-7890'
-  //   },
-  //   {
-  //     name: 'Carti', 
-  //     id: 2,
-  //     number: '123-456-7890'
-  //   }
-  // ])
-
   const hook = () => {
     console.log('effect')
     axios
@@ -49,12 +31,19 @@ const App = () => {
     } else {
       const personObject = {
         name: newName,
-        id: persons.length,
+        id: persons.length + 1,
         number: newNumber,
       }
       setPersons(persons.concat(personObject));
       setNewName('')
       setNewNumber('')
+
+      axios.
+        post('http://localhost:3001/persons', personObject)
+        .then(response => {
+          console.log(response)
+          console.log('HI!')
+        })
     }
 
   }
