@@ -22,6 +22,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [notification, setNotification] = useState('some notification happened')
+  const [isError, setIsError] = useState(false)
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
@@ -39,6 +40,14 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           setNotification(`Updated ${newPerson.name}'s number to ${newPerson.number}`)  
+          setIsError(false)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setNotification(`${newPerson.name} has already been deleted from the server`)
+          setIsError(true)
           setTimeout(() => {
             setNotification(null)
           }, 5000)
@@ -60,6 +69,7 @@ const App = () => {
         .then(response => {
           console.log(response)
           setNotification(`Added ${personObject.name}`)
+          setIsError(false)
           setTimeout(() => {
             setNotification(null)
           }, 5000)
@@ -94,7 +104,10 @@ const App = () => {
   
   return (
     <div>
-      <Notification message = {notification}/>
+      <Notification
+        message = {notification}
+        isError = {isError}
+      />
       <h2>Phonebook</h2>
       <Filter
         filter = {newFilter}
