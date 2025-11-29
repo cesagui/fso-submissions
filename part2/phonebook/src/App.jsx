@@ -26,9 +26,18 @@ const App = () => {
 
     // check if the person exists in our persons object already
     if(persons.some(person => person.name == newName)){
-      alert (`${newName} is already added to the phonebook`);
+      if (confirm(`${newName} is already in the phonebook, replace the old number with a new one?`)){
+        const oldPerson = persons.find(p => p.name = newName)
+        const newPerson = {...oldPerson, number: newNumber}
+        numberService.update(newPerson.id, newPerson)
+        .then(response => {
+          setPersons(persons.map(p => p.id == newPerson.id ? newPerson : p))  
+          setNewName('')
+          setNewNumber('')
+        })
+      }
     } else {
-      const newId = persons.length == 0 ? 1 : persons[persons.length - 1].id + 1
+      const newId = persons.length == 0 ? "1" : (parseInt(persons[persons.length - 1].id) + 1).toString()
       const personObject = {
         name: newName,
         id: newId,
