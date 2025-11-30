@@ -1,4 +1,5 @@
 import Country from "./country";
+import { useState } from "react";
 
 const Content = ({countries, filter}) => {
     const filteredCountries = countries.filter(country =>
@@ -32,9 +33,30 @@ const Content = ({countries, filter}) => {
 }
 
 const Entry = ({text}) => {
+    // create a piece of state on each entry whether or not showing the div
+    const [showingCountry, setShowingCountry] = useState(false)
+    
+    const toggleShowingCountry = (event) => {
+        setShowingCountry(!showingCountry)
+    }
+    if (showingCountry) {
+        return (
+            <div>
+                {text}
+                <button onClick = {toggleShowingCountry}>hide</button>
+                <Country name = {text.toLowerCase()}/>
+            </div>
+        )
+
+    }
     return (
-        <div>{text}</div>
+        <div>
+            {text} 
+            <button onClick = {toggleShowingCountry}>show</button>
+        </div>
     )
+        
+    
 }
 
 export default Content
