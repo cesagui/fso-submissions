@@ -6,8 +6,34 @@ POST http://localhost:3001/api/phonebook/ HTTP/1.1
 content-type: application/json
 
 {
-    "name": "sample",
+    "name": "Lionel Messi",
     "number": "123-456-7890"
 }
 ###
 GET http://localhost:3001/api/phonebook/
+
+### 
+# missing number request
+POST http://localhost:3001/api/phonebook/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Carlos Tevez"
+}
+###
+# missing name request
+POST http://localhost:3001/api/phonebook/ HTTP/1.1
+content-type: application/json
+
+{
+    "number": "678-900-1234"
+}
+###
+# name match
+POST http://localhost:3001/api/phonebook/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Lionel Messi",
+    "number": "678-900-1234"
+}

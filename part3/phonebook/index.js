@@ -71,6 +71,14 @@ app.post('/api/phonebook/', (request,response) => {
         })
     }
 
+    // check for match
+    const nameMatch = persons.find(person => person.name == body.name)
+    if (nameMatch){
+        return response.status(400).json({
+            error: 'names must be unique!'
+        })
+    }
+
     const person = {
         id: generateID(10000),
         name: body.name,
