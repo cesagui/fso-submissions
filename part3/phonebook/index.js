@@ -1,3 +1,4 @@
+const Person = require('./models/person')
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -13,11 +14,6 @@ morgan.token('type', function (req, res) {
 }
 )
 
-// app.use(morgan(':name'))
-
-// morgan.token('name', function getID (req) {
-//     return req
-// })
 
 let persons = [
     { 
@@ -51,7 +47,9 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/phonebook', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 app.get('/info', (request, response) => {
@@ -62,15 +60,9 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/phonebook/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-
-    
-    if (person){
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    })
 })
 
 app.post('/api/phonebook/', (request,response) => {
@@ -88,23 +80,16 @@ app.post('/api/phonebook/', (request,response) => {
         })
     }
 
-    // check for match
-    const nameMatch = persons.find(person => person.name == body.name)
-    if (nameMatch){
-        return response.status(400).json({
-            error: 'names must be unique!'
-        })
-    }
+    // FIX: ability to add matching names into DB
 
-    const person = {
-        id: generateID(10000),
+    const person = new Person({
         name: body.name,
         number: body.number,
-    }
+    })
     
-    persons = persons.concat(person)
-    response.json(person)
-    
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
 app.delete('/api/phonebook/:id',  (request, response) => {
