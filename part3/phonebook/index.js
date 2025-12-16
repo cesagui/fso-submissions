@@ -12,6 +12,17 @@ morgan.token('type', function (req, res) {
 }
 )
 
+const ErrorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError'){
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+    next(error)
+}
+
+app.use(ErrorHandler)
+
 
 let persons = [
     { 
@@ -57,10 +68,16 @@ app.get('/info', (request, response) => {
     //response.send(``)
 })
 
-app.get('/api/phonebook/:id', (request, response) => {
+app.get('/api/phonebook/:id', (request, response, next) => {
     Person.findById(request.params.id).then(person => {
-        response.json(person)
+        if (person){
+            response.json(person)
+        } else {
+            response.status(404).end()
+        }
+        
     })
+    .catch(error => next(error))
 })
 
 app.post('/api/phonebook/', (request,response) => {
@@ -90,13 +107,14 @@ app.post('/api/phonebook/', (request,response) => {
     })
 })
 
-app.delete('/api/phonebook/:id',  (request, response) => {
+app.delete('/api/phonebook/:id',  (request, response, next) => {
     Person.findByIdAndDelete(request.params.id)
         .then( result => {
             response.status(204).end()
         })
         .catch( error => next(error))
 })
+
 
 const PORT = process.env.PORT || 3001
 
