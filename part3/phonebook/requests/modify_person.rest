@@ -1,0 +1,10 @@
+GET http://localhost:3001/api/phonebook/
+
+###
+PUT http://localhost:3001/api/phonebook/6941d49d64774372f1a39c7b/ HTTP/1.1
+content-type:application/json
+
+{
+    "name": "Lionel Messi",
+    "number": "098-765-4321"
+}

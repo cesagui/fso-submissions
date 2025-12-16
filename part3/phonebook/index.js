@@ -115,6 +115,24 @@ app.delete('/api/phonebook/:id',  (request, response, next) => {
         .catch( error => next(error))
 })
 
+app.put('/api/phonebook/:id', (request, response, next) => {
+    const { name, number } = request.body
+
+    Person.findById(request.params.id)
+        .then( person => {
+            if (!person){
+                return response.status(400).end()
+            }
+
+            person.name = name
+            person.number = number
+
+            return person.save().then((updatedPerson) => {
+                response.json(updatedPerson)
+            })
+        })
+        .catch( error => next(error))
+})
 
 const PORT = process.env.PORT || 3001
 
