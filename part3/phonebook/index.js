@@ -1,12 +1,10 @@
 const Person = require('./models/person')
 const express = require('express')
 const morgan = require('morgan')
-const cors = require('cors')
 
 const app = express()
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :type'))
-app.use(cors())
 app.use(express.static('dist'))
 
 morgan.token('type', function (req, res) { 
@@ -93,10 +91,11 @@ app.post('/api/phonebook/', (request,response) => {
 })
 
 app.delete('/api/phonebook/:id',  (request, response) => {
-    const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
-    
-    response.status(204).end()
+    Person.findByIdAndDelete(request.params.id)
+        .then( result => {
+            response.status(204).end()
+        })
+        .catch( error => next(error))
 })
 
 const PORT = process.env.PORT || 3001
