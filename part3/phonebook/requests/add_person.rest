@@ -37,3 +37,39 @@ content-type: application/json
     "name": "Lionel Messi",
     "number": "678-900-1234"
 }
+
+###
+POST http://localhost:3001/api/phonebook/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Cristiano Ronaldo",
+    "number": "123-456-7890"
+}
+
+### Test invalid number
+POST http://localhost:3001/api/phonebook/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Jordi Alba",
+    "number": "123-456"
+}
+
+###
+POST http://localhost:3001/api/phonebook/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Jordi Alba",
+    "number": "123-456132-12"
+}
+
+###
+POST http://localhost:3001/api/phonebook/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Jordi Alba",
+    "number": "123-456132-12"
+}

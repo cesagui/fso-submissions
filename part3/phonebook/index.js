@@ -12,18 +12,6 @@ morgan.token('type', function (req, res) {
 }
 )
 
-const ErrorHandler = (error, request, response, next) => {
-    console.error(error.message)
-
-    if (error.name === 'CastError'){
-        return response.status(400).send({ error: 'malformatted id' })
-    }
-    next(error)
-}
-
-app.use(ErrorHandler)
-
-
 let persons = [
     { 
       "id": "1",
@@ -80,7 +68,7 @@ app.get('/api/phonebook/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/phonebook/', (request,response) => {
+app.post('/api/phonebook/', (request,response, next) => {
     const body = request.body
 
     if (!body.name){
@@ -105,6 +93,7 @@ app.post('/api/phonebook/', (request,response) => {
     person.save().then(savedPerson => {
         response.json(savedPerson)
     })
+    .catch(error => next(error))
 })
 
 app.delete('/api/phonebook/:id',  (request, response, next) => {
@@ -133,6 +122,19 @@ app.put('/api/phonebook/:id', (request, response, next) => {
         })
         .catch( error => next(error))
 })
+
+const ErrorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError'){
+        return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError'){
+        return response.status(400).json({ error: error.message})
+    }
+    next(error)
+}
+
+app.use(ErrorHandler)
 
 const PORT = process.env.PORT || 3001
 
