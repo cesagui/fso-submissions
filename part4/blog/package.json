@@ -4,15 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "node --test"
+    "start": "NODE_ENV=production node index.js",
+    "test": "NODE_ENV=test node --test",
+    "dev": "NODE_ENV=development node --watch index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "lodash": "^4.17.21",
+    "mongodb": "^7.0.0",
     "mongoose": "^9.0.2"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.4"
   }
 }
