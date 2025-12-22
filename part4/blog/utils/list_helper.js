@@ -32,9 +32,23 @@ const mostBlogs = (blogs) => {
     return Object.keys(byBlogCount).reduce((a,b) => byBlogCount[a] > byBlogCount[b] ? a : b)
 }
 
+const mostLikes = (blogs) => {
+    // group the objects together by author
+    const byBlogger = lodash.groupBy(blogs, 'author')
+
+    let ret = {}
+
+    lodash.forEach(byBlogger, (blogs, author) => {
+        ret[author] = lodash.sumBy(blogs, 'likes')
+    })
+
+    return Object.keys(ret).reduce((a,b) => ret[a] > ret[b] ? a : b)
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }

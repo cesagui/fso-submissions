@@ -147,3 +147,10 @@ describe('top blogger', () => {
         assert.deepStrictEqual(result, 'Robert C. Martin')
     })
 })
+
+describe('most liked blogger', () => {
+    test('multiple blogger', () => {
+        const result = listHelper.mostLikes(blogs)
+        assert.deepStrictEqual(result, 'Edsger W. Dijkstra')
+    })
+})
