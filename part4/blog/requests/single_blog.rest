@@ -19,3 +19,14 @@ content-type: application/json
     "url": "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
     "likes": 5
 }
+
+###
+POST http://localhost:3003/api/blog/ HTTP/1.1
+content-type: application/json
+    
+{
+    "title": "AI is Harmful and Will Take my Job",
+    "author": "Cesar A",
+    "url": "everywhere.com",
+    "likes": 5
+}

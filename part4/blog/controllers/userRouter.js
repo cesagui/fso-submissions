@@ -10,7 +10,7 @@ userRouter.post('/', async(request, response) => {
     if (password.length < MIN_PASSWORD_LENGTH){
         response.status(400).json({error: 'invalid password length'})
     }
-    
+
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)
 
@@ -22,6 +22,11 @@ userRouter.post('/', async(request, response) => {
     
     const savedUser = await user.save()
     response.status(201).json(savedUser)
+})
+
+userRouter.get('/', async (request, response) => {
+    const users = await User.find({}).populate('blogs')
+    response.json(users)
 })
 
 module.exports = userRouter
