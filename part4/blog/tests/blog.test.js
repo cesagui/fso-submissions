@@ -110,7 +110,7 @@ test('blog with undefined url will result in 400 error', async() => {
 	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)	
 })
 
-test.only('delete single blog post', async() => {
+test('delete single blog post', async() => {
 	const blogsAtStart = await helper.blogsInDb()
 	const blogToDelete = await blogsAtStart[0]
 
@@ -125,7 +125,7 @@ test.only('delete single blog post', async() => {
 	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 })
 
-test.only('update single blog post', async() => {
+test('update single blog post', async() => {
 	const blogsAtStart = await helper.blogsInDb()
 	const blogToUpdate = await blogsAtStart[0]
 

@@ -3,7 +3,8 @@ const config = require('./utils/config')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 const middleware = require('./utils/middleware')
-
+const blogRouter = require('./controllers/blogRouter')
+const userRouter = require('./controllers/userRouter')
 const app = express()
 
 app.use(express.json())
@@ -19,9 +20,9 @@ mongoose
     logger.error('error connection to MongoDB:', error.message)
   })
 
-const blogRouter = require('./controllers/blogRouter', )
-
 app.use('/api/blog', blogRouter)
+app.use('/api/user', userRouter)
+
 app.use(middleware.errorHandler)
 
 
