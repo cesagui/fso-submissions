@@ -4,71 +4,17 @@ const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const assert = require('node:assert')
-
+const helper = require('./test_helper')
 const api = supertest(app)
-
-const initialBlogs = [
-    {
-        _id: "5a422a851b54a676234d17f7",
-        title: "React patterns",
-        author: "Michael Chan",
-        url: "https://reactpatterns.com/",
-        likes: 7,
-        __v: 0
-    },
-    {
-        _id: "5a422aa71b54a676234d17f8",
-        title: "Go To Statement Considered Harmful",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-        likes: 5,
-        __v: 0
-    },
-    {
-        _id: "5a422b3a1b54a676234d17f9",
-        title: "Canonical string reduction",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-        likes: 12,
-        __v: 0
-    },
-    {
-        _id: "5a422b891b54a676234d17fa",
-        title: "First class tests",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
-        likes: 10,
-        __v: 0
-    },
-    {
-        _id: "5a422ba71b54a676234d17fb",
-        title: "TDD harms architecture",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-        likes: 0,
-        __v: 0
-    },
-    {
-        _id: "5a422bc61b54a676234d17fc",
-        title: "Type wars",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-        likes: 2,
-        __v: 0
-    }
-]
 
 beforeEach(async () => {
     await Blog.deleteMany({})
-    let blogObject = new Blog(initialBlogs[0])
-    await blogObject.save()
-    blogObject = new Blog(initialBlogs[1])
-    await blogObject.save()
-    blogObject = new Blog(initialBlogs[2])
-    await blogObject.save()
+	const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
+	const promiseArray = blogObjects.map(blog => blog.save())
+	await Promise.all(promiseArray)
 })
 
-test.only('blogs are returned as json', async () => {
+test('blogs are returned as json', async () => {
     await api
         .get('/api/blog')
         .expect(200)
@@ -79,7 +25,87 @@ after(async () => {
     await mongoose.connection.close()
 })
 
-test.only('all blogs are returned', async () => {
+test('all blogs are returned', async () => {
     const response = await api.get('/api/blog')
     assert.strictEqual(response.body.length, 3)
+})
+
+test('a single blog post can be viewed', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+	const blogToView = await blogsAtStart[0]
+
+	const resultBlog = await api
+		.get(`/api/blog/${blogToView.id}`)
+		.expect(200)
+		.expect('Content-Type', /application\/json/)
+
+	assert.deepStrictEqual(resultBlog.body, blogToView)
+}) // Note that this test also verifies that the unique identifier is now set to id, as per exercise 4.9
+
+test('a single blog post can be added', async() => {
+	const blogToAdd = {
+		title : 'FullStackOpen Lesson',
+		author : 'University of Helinski',
+		url : 'https://fullstackopen.com/en/part4/testing_the_backend#refactoring-the-route-responsible-for-adding-a-note',
+		likes : 12,
+	}
+
+	await api // test that the note is properly added
+		.post('/api/blog/')
+		.send(blogToAdd)
+		.expect(201)
+	
+	const blogsAtEnd = await helper.blogsInDb() // ensure that we have added the additional entry into db
+	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+	const titles = blogsAtEnd.map(blog => blog.title) // extract the titles of each blog
+	assert(titles.includes('FullStackOpen Lesson'))
+})
+
+test('blog with undefined likes will be set to 0', async() => {
+	const blogToAdd = {
+		title : 'FullStackOpen Lesson',
+		author : 'University of Helinski',
+		url : 'https://fullstackopen.com/en/part4/testing_the_backend#refactoring-the-route-responsible-for-adding-a-note',
+	}
+
+	await api // test that the note is properly added
+		.post('/api/blog/')
+		.send(blogToAdd)
+		.expect(201)
+	
+	const blogsAtEnd = await helper.blogsInDb()
+	const endSize = blogsAtEnd.length
+	const likes = blogsAtEnd.map(blog => blog.likes)
+	assert.strictEqual(likes[endSize - 1], 0)
+})
+
+test.only('blog with undefined title will result in 400 error', async() => {
+	const blogToAdd = {
+		author : 'University of Helinski',
+		url : 'https://fullstackopen.com/en/part4/testing_the_backend#refactoring-the-route-responsible-for-adding-a-note',
+	}
+
+	await api
+		.post('/api/blog/')
+		.send(blogToAdd)
+		.expect(400)
+	
+	const blogsAtEnd = await helper.blogsInDb() // check that no new blogs were added
+	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)	
+})
+
+test.only('blog with undefined url will result in 400 error', async() => {
+	const blogToAdd = {
+		title : 'FullStackOpen Lesson',
+		author : 'University of Helinski',
+	}
+
+	await api
+		.post('/api/blog/')
+		.send(blogToAdd)
+		.expect(400)
+	
+	const blogsAtEnd = await helper.blogsInDb() // check that no new blogs were added
+	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)	
 })
