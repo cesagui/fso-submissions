@@ -124,3 +124,19 @@ test.only('delete single blog post', async() => {
 
 	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 })
+
+test.only('update single blog post', async() => {
+	const blogsAtStart = await helper.blogsInDb()
+	const blogToUpdate = await blogsAtStart[0]
+
+	const requestBlog = {
+		likes: 123
+	}
+	const responseBlog = await api
+		.put(`/api/blog/${blogToUpdate.id}`)
+		.send(requestBlog)
+		.expect(200)
+	
+	assert.strictEqual(responseBlog.body.likes, 123)
+	
+})
