@@ -40,6 +40,48 @@ describe('when there is only one user in db', () => {
         const usernames = usersAtEnd.map(user => user.username)
         assert(usernames.includes(newUser.username))
     })
+
+    test.only('creation fails with short password length', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = ({
+            username: 'cesagui',
+            name: 'Cesar Aguirre',
+            password: 'JS'
+        })
+
+        await api
+            .post('/api/user')
+            .send(newUser)
+            .expect(400)
+        
+        const usersAtEnd = await helper.usersInDb()
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+
+        const usernames = usersAtEnd.map(user => user.username)
+        assert(!usernames.includes(newUser.username))
+    })
+
+    test.only('creation fails with short username length', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = ({
+            username: 'ca',
+            name: 'Cesar Aguirre',
+            password: 'ILoveJS'
+        })
+
+        await api
+            .post('/api/user')
+            .send(newUser)
+            .expect(400)
+        
+        const usersAtEnd = await helper.usersInDb()
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+
+        const usernames = usersAtEnd.map(user => user.username)
+        assert(!usernames.includes(newUser.username))
+    })
 })
 after(async () => {
     await mongoose.connection.close()

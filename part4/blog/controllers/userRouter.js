@@ -2,8 +2,15 @@ const bcrypt = require('bcryptjs')
 const userRouter = require('express').Router()
 const User = require('../models/user')
 
+const MIN_PASSWORD_LENGTH = 3
+
 userRouter.post('/', async(request, response) => {
     const {username, name, password} = request.body
+
+    if (password.length < MIN_PASSWORD_LENGTH){
+        response.status(400).json({error: 'invalid password length'})
+    }
+    
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)
 
