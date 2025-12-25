@@ -80,7 +80,7 @@ test('blog with undefined likes will be set to 0', async() => {
 	assert.strictEqual(likes[endSize - 1], 0)
 })
 
-test.only('blog with undefined title will result in 400 error', async() => {
+test('blog with undefined title will result in 400 error', async() => {
 	const blogToAdd = {
 		author : 'University of Helinski',
 		url : 'https://fullstackopen.com/en/part4/testing_the_backend#refactoring-the-route-responsible-for-adding-a-note',
@@ -95,7 +95,7 @@ test.only('blog with undefined title will result in 400 error', async() => {
 	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)	
 })
 
-test.only('blog with undefined url will result in 400 error', async() => {
+test('blog with undefined url will result in 400 error', async() => {
 	const blogToAdd = {
 		title : 'FullStackOpen Lesson',
 		author : 'University of Helinski',
@@ -108,4 +108,19 @@ test.only('blog with undefined url will result in 400 error', async() => {
 	
 	const blogsAtEnd = await helper.blogsInDb() // check that no new blogs were added
 	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)	
+})
+
+test.only('delete single blog post', async() => {
+	const blogsAtStart = await helper.blogsInDb()
+	const blogToDelete = await blogsAtStart[0]
+
+	await api
+		.delete(`/api/blog/${blogToDelete.id}`)
+		.expect(204)
+	
+	const blogsAtEnd = await helper.blogsInDb()
+	const titles = blogsAtEnd.map(blog => blog.title)
+	assert(!titles.includes(blogToDelete.title))
+
+	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 })
