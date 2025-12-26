@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blog/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1ZDI5ZWE1MzBmZjExMDYxZiIsImlhdCI6MTc2NjcyNDUyMywiZXhwIjoxNzY2NzI4MTIzfQ.qPsf6YUHR7NAX8jh3-SJNYv_OPY-GpzvOVyqB7NGMFQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1ZDI5ZWE1MzBmZjExMDYxZiIsImlhdCI6MTc2NjcyNzAzNywiZXhwIjoxNzY2NzMwNjM3fQ.iyBKYV_mCxP4YJIfrokRYqFyEkn8A4H5uyBLRuKS5ww
 
 {
     "title": "I was NOT up late night, ballin'",
@@ -10,9 +10,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1Z
 }
 
 ###
-DELETE http://localhost:3003/api/blog/694e1029fd562f17848e7b68
+DELETE http://localhost:3003/api/blog/694e1d987ff60931f9a49279
 Content-Type: application/application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1ZDI5ZWE1MzBmZjExMDYxZiIsImlhdCI6MTc2NjcyNTU5MiwiZXhwIjoxNzY2NzI5MTkyfQ.AEEUFEau-rv_5eS2jhkm12d7TvgILE0hMbtY-FwxXzs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1ZDI5ZWE1MzBmZjExMDYxZiIsImlhdCI6MTc2NjcyNzgxNSwiZXhwIjoxNzY2NzMxNDE1fQ.qnd_t6lJeyPqnCIGJ4njEh_VAucxbCEnCwopdM0akvU
 
 ###
 DELETE http://localhost:3003/api/blog/694db8c8c7d4cf5f51777b27
