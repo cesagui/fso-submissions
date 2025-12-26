@@ -1,17 +1,40 @@
 const { test, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcryptjs')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const assert = require('node:assert')
 const helper = require('./test_helper')
 const api = supertest(app)
 
+let token
+
 beforeEach(async () => {
-    await Blog.deleteMany({})
-	const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
+	await Blog.deleteMany({})
+	await User.deleteMany({})
+	
+	const passwordHash = await bcrypt.hash('testpassword', 10)
+	const user = new User({ username: 'testuser', name: 'Test User', passwordHash })
+	await user.save()
+	
+	const blogObjects = helper.initialBlogs.map(blog => new Blog({ ...blog, user: user._id }))
 	const promiseArray = blogObjects.map(blog => blog.save())
 	await Promise.all(promiseArray)
+	
+	const login = {
+		username: 'testuser',
+		password: 'testpassword'
+	}
+	
+	const loginResponse = await api
+		.post('/api/login')
+		.send(login)
+		.expect(200)
+		.expect('Content-Type', /application\/json/)
+	
+	token = loginResponse.body.token
 })
 
 test('blogs are returned as json', async () => {
@@ -27,7 +50,7 @@ after(async () => {
 
 test('all blogs are returned', async () => {
     const response = await api.get('/api/blog')
-    assert.strictEqual(response.body.length, 3)
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
 test('a single blog post can be viewed', async () => {
@@ -39,7 +62,8 @@ test('a single blog post can be viewed', async () => {
 		.expect(200)
 		.expect('Content-Type', /application\/json/)
 
-	assert.deepStrictEqual(resultBlog.body, blogToView)
+	const blogToCompare = { ...blogToView, user: blogToView.user.toString() }
+	assert.deepStrictEqual(resultBlog.body, blogToCompare)
 }) // Note that this test also verifies that the unique identifier is now set to id, as per exercise 4.9
 
 test('a single blog post can be added', async() => {
@@ -52,6 +76,7 @@ test('a single blog post can be added', async() => {
 
 	await api // test that the note is properly added
 		.post('/api/blog/')
+		.set('Authorization', `Bearer ${token}`)
 		.send(blogToAdd)
 		.expect(201)
 	
@@ -71,6 +96,7 @@ test('blog with undefined likes will be set to 0', async() => {
 
 	await api // test that the note is properly added
 		.post('/api/blog/')
+		.set('Authorization', `Bearer ${token}`)
 		.send(blogToAdd)
 		.expect(201)
 	
@@ -88,6 +114,7 @@ test('blog with undefined title will result in 400 error', async() => {
 
 	await api
 		.post('/api/blog/')
+		.set('Authorization', `Bearer ${token}`)
 		.send(blogToAdd)
 		.expect(400)
 	
@@ -103,6 +130,7 @@ test('blog with undefined url will result in 400 error', async() => {
 
 	await api
 		.post('/api/blog/')
+		.set('Authorization', `Bearer ${token}`)
 		.send(blogToAdd)
 		.expect(400)
 	
@@ -116,6 +144,7 @@ test('delete single blog post', async() => {
 
 	await api
 		.delete(`/api/blog/${blogToDelete.id}`)
+		.set('Authorization', `Bearer ${token}`)
 		.expect(204)
 	
 	const blogsAtEnd = await helper.blogsInDb()

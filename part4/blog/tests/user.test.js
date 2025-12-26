@@ -30,6 +30,7 @@ describe('when there is only one user in db', () => {
 
         await api
             .post('/api/user')
+            .set('Authorization', `${requestToken}`)
             .send(newUser)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -103,7 +104,6 @@ describe('blog adds a random user', () => {
             likes: '42',
             user: allUsers[0]._id // should fetch the root ID
         }
-
         
     })
 })
