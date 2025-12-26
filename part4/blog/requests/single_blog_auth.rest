@@ -1,9 +1,9 @@
 POST http://localhost:3003/api/blog/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1ZDI5ZWE1MzBmZjExMDYxZiIsImlhdCI6MTc2NjcyMzQ3NCwiZXhwIjoxNzY2NzI3MDc0fQ.Cj-dQi12KgkdKluuM8-EvvQ5BZa_AklCWKsp7YKrQeo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1ZDI5ZWE1MzBmZjExMDYxZiIsImlhdCI6MTc2NjcyNDUyMywiZXhwIjoxNzY2NzI4MTIzfQ.qPsf6YUHR7NAX8jh3-SJNYv_OPY-GpzvOVyqB7NGMFQ
 
 {
-    "title": "I was up late night, ballin'",
+    "title": "I was NOT up late night, ballin'",
     "author": "Vince Staples",
     "url": "https://spotify.com/",
     "likes": 1345
