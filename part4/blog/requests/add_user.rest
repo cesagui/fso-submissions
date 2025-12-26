@@ -1,3 +1,5 @@
+
+
 POST http://localhost:3003/api/user/ HTTP/1.1
 content-type: application/json
 
@@ -7,3 +9,11 @@ content-type: application/json
     "password" : "thisIsATestPassword"
 }
 ###
+POST http://localhost:3003/api/user/ HTTP/1.1
+content-type: application/json
+
+{
+    "username" : "peggy",
+    "name" : "Burner Account",
+    "password" : "peggylover1539"
+}
