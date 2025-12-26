@@ -8,3 +8,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1Z
     "url": "https://spotify.com/",
     "likes": 1345
 }
+
+###
+DELETE http://localhost:3003/api/blog/694e1029fd562f17848e7b68
+Content-Type: application/application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1ZDI5ZWE1MzBmZjExMDYxZiIsImlhdCI6MTc2NjcyNTU5MiwiZXhwIjoxNzY2NzI5MTkyfQ.AEEUFEau-rv_5eS2jhkm12d7TvgILE0hMbtY-FwxXzs
+
+###
+DELETE http://localhost:3003/api/blog/694db8c8c7d4cf5f51777b27
+Content-Type: application/application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NGUwYzk1ZDI5ZWE1MzBmZjExMDYxZiIsImlhdCI6MTc2NjcyNTU5MiwiZXhwIjoxNzY2NzI5MTkyfQ.AEEUFEau-rv_5eS2jhkm12d7TvgILE0hMbtY-FwxXzs
