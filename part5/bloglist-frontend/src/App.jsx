@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Notification from './components/Notification'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -16,6 +17,10 @@ const App = () => {
 
 	// blog display assoc. states
 	const [blogs, setBlogs] = useState([])
+
+	// notification states
+	const [message, setMessage] = useState(null)
+	const [isError, setError] = useState(false)
 
 	// handle fetching of blogs from blogService
 	useEffect(() => {
@@ -46,11 +51,16 @@ const App = () => {
 			setUsername('')
 			setPassword('')
 		} catch {
-			console.log('wrong login credentials')
+			setMessage('wrong username or password')
+			setError(true)
+			setTimeout(()=>{
+				setMessage(null)
+				setError(false)
+			}, 5000)
 		}
 	}
 
-	const handleNewBlog = (event) => {
+	const handleNewBlog = async (event) => {
 		event.preventDefault()
 		console.log('we want to create a new blog')
 
@@ -59,22 +69,40 @@ const App = () => {
 			author: blogAuthor,
 			url: blogUrl,
 		}
-
-		blogService.create(blogObject).then(returnedBlog =>{
+		try {
+			const returnedBlog = await blogService.create(blogObject)
 			setBlogs(blogs.concat(returnedBlog))
 			setBlogTitle('')
 			setBlogAuthor('')
 			setBlogUrl('')
-		})
+			setMessage(`A new blog ${returnedBlog.title} by ${returnedBlog.author} has been added`)
+			setError(false)
+			setTimeout(()=>{
+				setMessage(null)
+			}, 5000)
+		} catch (error) {
+			console.log('Error:', error)
+			setMessage('Error creating blog')
+			setError(true)
+			setTimeout(()=>{
+				setMessage(null)
+				setError(false)
+			}, 5000)
+		}
 	}
 
 	const handleLogout = (event) => {
 		event.preventDefault()
-		console.log('attempting logout')
 		setUser(null)
-		window.localStorage.setItem(
-			'loggedBlogappUser', ''
+		window.localStorage.removeItem(
+			'loggedBlogappUser'
 		)
+		setMessage('successfully logged out')
+		setError(false)
+		setTimeout(() => {
+			setMessage(null)
+			setError(false)
+		}, 5000)
 	}
 
 	const loginForm = () => (
@@ -154,6 +182,7 @@ const App = () => {
 
 	return (
 		<div>
+			<Notification message = {message} isError = {isError}/>
 			{!user && loginForm()}
 			{user && blogDisplay()}
 		</div>
