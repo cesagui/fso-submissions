@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import Toggleable from './Toggleable'
 import UserService from '../services/users'
+import BlogService from '../services/blogs'
 
 const Blog = ({ blog }) => {
-    const [user, setUser] = useState(null) // used to store the user associated with user
+    const [user, setUser] = useState(null) // used to store the user associated that created this blog
+    const [blogObject, setBlog] = useState(blog) // used to store the blogObject
     const [visible, setVisible] = useState(false) // related to visibility
 
     
@@ -16,8 +17,24 @@ const Blog = ({ blog }) => {
         setVisible(!visible)
     }
 
-    const handleLike = () => {
+    const handleLike = async () => {
         console.log('like!')
+        blogObject.likes++
+        const request = {
+            title: blogObject.title,
+            author: blogObject.author,
+            url: blogObject.url,
+            likes: blogObject.likes
+        }
+        // increment the like property of the currentBlog object
+        try{
+            const resp = await BlogService.put(blogObject.id, request)
+            setBlog(resp)
+        } catch {
+            console.log('error in handling like')
+        }
+        
+
     }
 
     const blogStyle = {
@@ -36,14 +53,14 @@ const Blog = ({ blog }) => {
 
     return (
         <div style = {blogStyle} >
-            {blog.title} {blog.author}  
+            {blogObject.title} {blogObject.author}  
             <span>
                 <button style = {hideWhenVisible} onClick = {toggleVisibility}>show</button>
                 <button style = {showWhenVisible} onClick = {toggleVisibility}>hide</button>
             </span>
             <div style = {showWhenVisible}>
-                <p>{blog.url}</p>
-                <p>likes {blog.likes} <button onClick = {handleLike}>like</button></p>
+                <p>{blogObject.url}</p>
+                <p>likes {blogObject.likes} <button onClick = {handleLike}>like</button></p>
                 <p>{user.name}</p>
             </div>
         </div> 
