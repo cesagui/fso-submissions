@@ -28,8 +28,10 @@ const App = () => {
 
 	// handle fetching of blogs from blogService
 	useEffect(() => {
-		blogService.getAll().then(blogs =>
-			setBlogs(blogs)
+		blogService.getAll().then(blogs =>{
+            blogs.sort((a,b) => b.likes - a.likes)
+            setBlogs(blogs)
+        }
 		)
 	}, [])
 
@@ -110,6 +112,10 @@ const App = () => {
 		}, 5000)
 	}
 
+	const handleDeleteBlog = (id) => {
+		setBlogs(blogs.filter(blog => blog.id !== id))
+	}
+
 	const loginForm = () => {
 		return (
 			<Toggleable buttonLabel = "log-in">
@@ -140,7 +146,7 @@ const App = () => {
 			<h2>blogs</h2>
 			<p>{user.name} logged in <button onClick = {handleLogout}>Logout</button></p>
 			{blogs.map(blog =>
-				<Blog key={blog.id} blog={blog}/>
+				<Blog key={blog.id} blog={blog} loggedUser = {user.username} onDelete={handleDeleteBlog}/>
 			)}
 		</div>
 	)

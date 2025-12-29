@@ -2,15 +2,19 @@ import { useState, useEffect } from 'react'
 import UserService from '../services/users'
 import BlogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, loggedUser, onDelete }) => {
     const [user, setUser] = useState(null) // used to store the user associated that created this blog
     const [blogObject, setBlog] = useState(blog) // used to store the blogObject
     const [visible, setVisible] = useState(false) // related to visibility
 
-    
-    useEffect(() => { // used to fetch the user data upon first render
+    const [deleteable, setDeletable] = useState(false);
+
+    useEffect(() => { // used to fetch the blog's user data upon first render
         UserService.getUser(blog.user.id)
-            .then(response => setUser(response.data))
+            .then(response => {
+                setUser(response.data)
+                setDeletable(response.data.username === loggedUser) // make the component deletable if loggedUser is the same blog's user's username
+            })
     }, [blog.user.id]) // effect is ran whenever blog.user.id changes
 
     const toggleVisibility = () => {
@@ -33,8 +37,19 @@ const Blog = ({ blog }) => {
         } catch {
             console.log('error in handling like')
         }
-        
+    }
 
+    const handleDelete = async() => {
+        if (window.confirm(`Remove blog ${blogObject.title} by ${blogObject.author}?`)) {
+            console.log('attempting delete')
+            try {
+                await BlogService.del(blogObject.id)
+                console.log('delete successful')
+                onDelete(blogObject.id)
+            } catch {
+                console.log('error in handling delete')
+            }
+        }
     }
 
     const blogStyle = {
@@ -44,8 +59,11 @@ const Blog = ({ blog }) => {
         borderWidth: 1,
         marginBottom: 5
     }
+
     const hideWhenVisible = {display : visible ? 'none' : ''}
     const showWhenVisible = {display : visible ? '' : 'none'}
+    
+    const showWhenDeletable = {display : deleteable ? '' : 'none'}
 
     if (!user) {
         return null
@@ -62,6 +80,7 @@ const Blog = ({ blog }) => {
                 <p>{blogObject.url}</p>
                 <p>likes {blogObject.likes} <button onClick = {handleLike}>like</button></p>
                 <p>{user.name}</p>
+                <button style = {showWhenDeletable} onClick = {handleDelete}>i can be deleted!!!</button>
             </div>
         </div> 
     )
