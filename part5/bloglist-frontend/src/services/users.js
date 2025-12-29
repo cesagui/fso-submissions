@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios'
 const baseUrl = '/api/users'
 
 const getUser = async (id) => {

@@ -7,7 +7,7 @@ const Blog = ({ blog, loggedUser, onDelete }) => {
     const [blogObject, setBlog] = useState(blog) // used to store the blogObject
     const [visible, setVisible] = useState(false) // related to visibility
 
-    const [deleteable, setDeletable] = useState(false);
+    const [deleteable, setDeletable] = useState(false)
 
     useEffect(() => { // used to fetch the blog's user data upon first render
         UserService.getUser(blog.user.id)
@@ -15,7 +15,7 @@ const Blog = ({ blog, loggedUser, onDelete }) => {
                 setUser(response.data)
                 setDeletable(response.data.username === loggedUser) // make the component deletable if loggedUser is the same blog's user's username
             })
-    }, [blog.user.id]) // effect is ran whenever blog.user.id changes
+    }, [blog.user.id, loggedUser]) // effect is ran whenever blog.user.id changes
 
     const toggleVisibility = () => {
         setVisible(!visible)
@@ -60,10 +60,9 @@ const Blog = ({ blog, loggedUser, onDelete }) => {
         marginBottom: 5
     }
 
-    const hideWhenVisible = {display : visible ? 'none' : ''}
-    const showWhenVisible = {display : visible ? '' : 'none'}
-    
-    const showWhenDeletable = {display : deleteable ? '' : 'none'}
+    const hideWhenVisible = { display : visible ? 'none' : '' }
+    const showWhenVisible = { display : visible ? '' : 'none' }
+    const showWhenDeletable = { display : deleteable ? '' : 'none' }
 
     if (!user) {
         return null
@@ -71,7 +70,7 @@ const Blog = ({ blog, loggedUser, onDelete }) => {
 
     return (
         <div style = {blogStyle} >
-            {blogObject.title} {blogObject.author}  
+            {blogObject.title} {blogObject.author}
             <span>
                 <button style = {hideWhenVisible} onClick = {toggleVisibility}>show</button>
                 <button style = {showWhenVisible} onClick = {toggleVisibility}>hide</button>
@@ -82,8 +81,8 @@ const Blog = ({ blog, loggedUser, onDelete }) => {
                 <p>{user.name}</p>
                 <button style = {showWhenDeletable} onClick = {handleDelete}>i can be deleted!!!</button>
             </div>
-        </div> 
+        </div>
     )
-} 
+}
 
 export default Blog
