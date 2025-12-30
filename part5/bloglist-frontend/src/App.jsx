@@ -14,11 +14,6 @@ const App = () => {
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
 
-    // blog-form associated states
-    const [blogTitle, setBlogTitle] = useState('')
-    const [blogAuthor, setBlogAuthor] = useState('')
-    const [blogUrl, setBlogUrl] = useState('')
-
     // blog display assoc. states
     const [blogs, setBlogs] = useState([])
 
@@ -66,22 +61,10 @@ const App = () => {
         }
     }
 
-    const handleNewBlog = async (event) => {
-        event.preventDefault()
-        console.log('we want to create a new blog')
-
-        const blogObject = {
-            title: blogTitle,
-            author: blogAuthor,
-            url: blogUrl,
-        }
-
+    const handleNewBlog = async (blogObject) => {
         try {
             const returnedBlog = await blogService.create(blogObject)
             setBlogs(blogs.concat(returnedBlog))
-            setBlogTitle('')
-            setBlogAuthor('')
-            setBlogUrl('')
             setMessage(`A new blog ${returnedBlog.title} by ${returnedBlog.author} has been added`)
             setError(false)
             setTimeout(() => {
@@ -134,13 +117,7 @@ const App = () => {
         <div>
             <Toggleable buttonLabel="new blog">
                 <BlogForm
-                    handleSubmit={handleNewBlog}
-                    handleAuthorChange={({ target }) => setBlogAuthor(target.value)}
-                    handleTitleChange={({ target }) => setBlogTitle(target.value)}
-                    handleUrlChange={({ target }) => setBlogUrl(target.value)}
-                    title={blogTitle}
-                    author={blogAuthor}
-                    url={blogUrl}
+                    createNewBlog={handleNewBlog}
                 />
             </Toggleable>
             <h2>blogs</h2>

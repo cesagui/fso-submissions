@@ -77,7 +77,7 @@ const Blog = ({ blog, loggedUser, onDelete }) => {
             </span>
             <div style = {showWhenVisible}>
                 <p>{blogObject.url}</p>
-                <p>likes {blogObject.likes} <button onClick = {handleLike}>like</button></p>
+                <p>likes {blogObject.likes} <button id = 'like-button' onClick = {handleLike}>like</button></p>
                 <p>{user.name}</p>
                 <button style = {showWhenDeletable} onClick = {handleDelete}>i can be deleted!!!</button>
             </div>
