@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { loginWith, createBlog, showBlog, hideBlog, getBlogLikes, likeBlog, deleteBlog, logOut } = require('./helper')
+const { loginWith, createBlog, showBlog, hideBlog, getBlogLikes, likeBlog, deleteBlog, logOut , getRanks} = require('./helper')
 const { before } = require('node:test')
 
 
@@ -38,34 +38,61 @@ describe('Blog app', async () => {
     describe('Once logged in', async () => {
         beforeEach(async ({page}) => {
             await loginWith(page, 'test-user', 'test-password')
-            await createBlog(page, 'test-title', 'test-author', 'test-url')
+            await createBlog(page, 'test-title-one', 'test-author-one', 'test-url')
         })
 
         test('blog can be created', async ({page}) => {
-            await expect(page.getByText('test-title test-author')).toBeVisible()
+            await expect(page.getByText('test-title-one test-author-one')).toBeVisible()
         })
 
         test('blog can be liked', async ({page}) => {
-            await showBlog(page, 'test-title', 'test-author')
+            await showBlog(page, 'test-title-one', 'test-author-one')
             await expect(page.getByText('test-url')).toBeVisible() // tests that show/hide works
 
-            const beforeLikes = await getBlogLikes(page, 'test-title', 'test-author')
+            const beforeLikes = await getBlogLikes(page, 'test-title-one', 'test-author-one')
             expect(beforeLikes).toEqual(0)
 
-            await likeBlog(page, 'test-title', 'test-author')
-            await likeBlog(page, 'test-title', 'test-author')
+            await likeBlog(page, 'test-title-one', 'test-author-one')
+            await likeBlog(page, 'test-title-one', 'test-author-one')
 
-            const afterLikes = await getBlogLikes(page, 'test-title', 'test-author')
+            const afterLikes = await getBlogLikes(page, 'test-title-one', 'test-author-one')
             expect(afterLikes).toEqual(2)
             
             // await hideBlog(page, 'test-title', 'test-author')
         })
 
         test('blog can be deleted', async ({page}) => {
-            await showBlog(page, 'test-title', 'test-author')
-            await deleteBlog(page, 'test-title', 'test-author')
-            const locator = page.getByText('test-title test-author').locator('..')
+            await showBlog(page, 'test-title-one', 'test-author-one')
+            await deleteBlog(page, 'test-title-one', 'test-author-one')
+            const locator = page.getByText('test-title-one test-author-one').locator('..')
             await expect(locator).toHaveCount(0)
+        })
+
+        test('blogs are ranked by like count', async ({page}) => {
+            // create two more blogs
+            await createBlog(page, 'test-title-two', 'test-author-two', 'test-url')
+            await createBlog(page, 'test-title-three', 'test-author-three', 'test-url')
+            // like the first blog once
+            await showBlog(page, 'test-title-one', 'test-author-one')
+            await likeBlog(page, 'test-title-one', 'test-author-one')
+            await hideBlog(page, 'test-title-one', 'test-author-one')
+            // like the second blog twice
+            await showBlog(page, 'test-title-two', 'test-author-two')
+            await likeBlog(page, 'test-title-two', 'test-author-two')
+            await likeBlog(page, 'test-title-two', 'test-author-two')
+            await hideBlog(page, 'test-title-two', 'test-author-two')
+            // like the third blog three times
+            await showBlog(page, 'test-title-three', 'test-author-three')
+            await likeBlog(page, 'test-title-three', 'test-author-three')
+            await likeBlog(page, 'test-title-three', 'test-author-three')
+            await likeBlog(page, 'test-title-three', 'test-author-three')
+            await hideBlog(page, 'test-title-three', 'test-author-three')
+            // retrieve the rankings of each 'title author' pair
+            // getRanks(page, [strings])
+            // expect getRanks to return [3, 2, 1]
+            const titles = ['test-title-one', 'test-title-two', 'test-title-three']
+            const ranks = await getRanks(page, titles)
+            expect(ranks).toEqual([3, 2, 1])
         })
     })
 

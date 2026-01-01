@@ -23,12 +23,14 @@ const App = () => {
 
     // handle fetching of blogs from blogService
     useEffect(() => {
+        refreshBlogOrder()
+    }, [])
+    const refreshBlogOrder = () => {
         blogService.getAll().then(blogs => {
             blogs.sort((a, b) => b.likes - a.likes)
             setBlogs(blogs)
-        }
-        )
-    }, [])
+        })
+    }
 
     // handle first loading of the page
     useEffect(() => {
@@ -124,7 +126,7 @@ const App = () => {
             <h2>blogs</h2>
             <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
             {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} loggedUser={user.username} onDelete={handleDeleteBlog} />
+                <Blog key={blog.id} blog={blog} loggedUser={user.username} onDelete={handleDeleteBlog} refreshBlogOrder={refreshBlogOrder}/>
             )}
         </div>
     )

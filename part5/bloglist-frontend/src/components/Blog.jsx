@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import UserService from '../services/users'
 import BlogService from '../services/blogs'
 
-const Blog = ({ blog, loggedUser, onDelete }) => {
+const Blog = ({ blog, loggedUser, onDelete, refreshBlogOrder }) => {
     const [user, setUser] = useState(null) // used to store the user associated that created this blog
     const [blogObject, setBlog] = useState(blog) // used to store the blogObject
     const [visible, setVisible] = useState(false) // related to visibility
@@ -33,6 +33,7 @@ const Blog = ({ blog, loggedUser, onDelete }) => {
         // increment the like property of the currentBlog object
         try{
             const resp = await BlogService.put(blogObject.id, request)
+            refreshBlogOrder()
             setBlog(resp)
         } catch {
             console.log('error in handling like')

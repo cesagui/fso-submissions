@@ -11,10 +11,12 @@ const createBlog = async (page, title, author, url) => {
     await page.getByLabel('author:').fill(author)
     await page.getByLabel('url:').fill(url)
     await page.getByRole('button', { name : 'create' }).click()
+    await page.waitForTimeout(500)
+    await page.getByRole('button', { name : 'hide' }).click()
 }
 
 const showBlog = async (page, title, author) => {
-    const parentElement = await page.getByText(`${title} ${author}`).locator('..')
+    const parentElement = await page.getByText(`${title} ${author}`)
     await parentElement.getByRole('button', { name : 'show' }).click()
 }
 
@@ -49,6 +51,44 @@ const logOut = async (page) => {
     await page.getByRole('button', { name : 'Logout'}).click()
 }
 
+const generateRanks = (arr) => {
+    // returns the elements in rank form
+    // create a sorted array of unique elements
+    const sortedUnique = [...arr].sort((a ,b) => a - b)
+
+    const rankMap = new Map();
+    for (let i = 0; i < sortedUnique.length; i++) {
+        // Ranks start from 1
+        rankMap.set(sortedUnique[i], i + 1);
+    }
+
+    const result = arr.map((element) => rankMap.get(element))
+    return result
+}
+
+const getRanks = async (page, titleStrings) => {
+    /*
+        get the inner html of the page
+        iterate through each element (each element is a string)
+            find at what index the string appears
+            
+    */
+
+            
+    const parentElement = page.getByText(titleStrings[0], { exact: false }).locator('..')
+    const returned = []
+    console.log(`parentElement: ${parentElement}`)
+    const html = await parentElement.innerHTML()
+    console.log(html)
+    for (const t in titleStrings) {
+        const idx = html.indexOf(t)
+        returned.push(idx)
+    }
+
+    const result = generateRanks(returned)
+    return result
+}
+
 export {
     loginWith,
     createBlog,
@@ -57,5 +97,6 @@ export {
     getBlogLikes,
     likeBlog,
     deleteBlog,
-    logOut
+    logOut,
+    getRanks
 }
