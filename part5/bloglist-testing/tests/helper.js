@@ -38,11 +38,24 @@ const getBlogLikes = async (page, title, author) => {
     return val
 }
 
+const deleteBlog = async (page, title, author) => {
+    const parentElement = await page.getByText(`${title} ${author}`).locator('..')
+    page.on('dialog', dialog => dialog.accept());
+    await parentElement.getByRole('button', { name : 'i can be deleted!!!'}).click()
+    await page.waitForTimeout(500)
+}
+
+const logOut = async (page) => {
+    await page.getByRole('button', { name : 'Logout'}).click()
+}
+
 export {
     loginWith,
     createBlog,
     showBlog,
     hideBlog,
     getBlogLikes,
-    likeBlog
+    likeBlog,
+    deleteBlog,
+    logOut
 }
