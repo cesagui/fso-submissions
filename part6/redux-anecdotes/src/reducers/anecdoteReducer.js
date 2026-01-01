@@ -36,7 +36,7 @@ export const createAnecdote = content => {
         }
     })
 }
-const reducer = (state = initialState, action) => {
+const anecdoteReducer = (state = initialState, action) => {
     /*
         action = {
             type: 'VOTE'
@@ -50,7 +50,7 @@ const reducer = (state = initialState, action) => {
     // console.log('action', action)
     // every-time we receive an action, sort the state arr
     switch (action.type){
-        case 'VOTE':
+        case 'VOTE': {
             // produce a app state where all objects are the same, except the anecdote object with matching id is replaced
             const id = action.payload.id 
             const anecdoteToChange = state.find(obj => obj.id === id)
@@ -59,13 +59,15 @@ const reducer = (state = initialState, action) => {
                 votes: anecdoteToChange.votes + 1
             }
             return state.map((obj) => (obj.id === id ? changedAnecdote : obj)).sort((a,b) => b.votes - a.votes)
-        case 'NEW_ANECDOTE':
+        }
+        case 'NEW_ANECDOTE': {
             const name = action.payload.content
             const newObject = asObject(name)
             return state.concat(newObject)
+        }
         default:
             return state
     }
 }
 
-export default reducer
+export default anecdoteReducer
